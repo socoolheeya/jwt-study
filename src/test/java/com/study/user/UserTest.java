@@ -4,6 +4,7 @@ import com.study.user.model.Role;
 import com.study.user.model.User;
 import com.study.user.model.UserRole;
 import com.study.user.repository.UserRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,8 @@ public class UserTest {
     private UserRepository userRepository;
 
     @Test
-    public void 사용자_등록_테스트() {
+    @DisplayName("사용자 등록 테스트")
+    public void createUser() {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String password = encoder.encode("1234");
 

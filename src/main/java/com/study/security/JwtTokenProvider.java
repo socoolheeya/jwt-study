@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
 
-    private Key getSignKey(String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+    private Key getSignKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(JwtProperties.SECRET_KEY);
 
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -45,7 +45,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + JwtProperties.ACCESS_EXPIRATION_TIME))
-                .signWith(this.getSignKey(JwtProperties.SECRET_KEY), SignatureAlgorithm.HS512)
+                .signWith(this.getSignKey(), SignatureAlgorithm.HS512)
                 .compact()
                 ;
 
@@ -53,7 +53,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + JwtProperties.REFRESH_EXPIRATION_TIME))
-                .signWith(this.getSignKey(JwtProperties.SECRET_KEY), SignatureAlgorithm.HS512)
+                .signWith(this.getSignKey(), SignatureAlgorithm.HS512)
                 .compact()
                 ;
 
