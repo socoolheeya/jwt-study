@@ -1,7 +1,9 @@
 package com.study.user.repository;
 
+import com.study.user.dto.UserDto;
 import com.study.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 @Repository

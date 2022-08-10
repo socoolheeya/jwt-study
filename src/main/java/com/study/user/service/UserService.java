@@ -1,6 +1,7 @@
 package com.study.user.service;
 
 import com.study.security.CustomAuthenticationManager;
+import com.study.user.dto.UserDto;
 import com.study.user.model.User;
 import com.study.user.model.http.RequestUser;
 import com.study.user.repository.UserRepository;
@@ -8,10 +9,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -23,8 +28,13 @@ public class UserService {
 
     private final CustomAuthenticationManager authenticationManager;
 
-    public User getUser(String email) {
+    public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public User userGetUserById(long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 없습니다"));
     }
 
     public User getUser(Long id) {

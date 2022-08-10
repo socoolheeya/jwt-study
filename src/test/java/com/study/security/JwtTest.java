@@ -35,7 +35,6 @@ public class JwtTest {
         JwtToken token = jwtTokenProvider.createToken(authentication);
 
         System.out.println("token : " + token.toString());
-
     }
 
     @Test

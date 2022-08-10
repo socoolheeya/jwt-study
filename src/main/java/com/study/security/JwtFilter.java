@@ -30,6 +30,9 @@ public class JwtFilter extends UsernamePasswordAuthenticationFilter {
         try {
             User user = mapper.readValue(request.getInputStream(), User.class);
 
+            log.debug("JwtFilter email : {}", user.getEmail());
+            log.debug("JwtFilter password : {}", user.getPassword());
+
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
             return customAuthenticationManager.authenticate(token);
         } catch (IOException e) {

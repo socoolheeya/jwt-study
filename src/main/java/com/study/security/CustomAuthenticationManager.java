@@ -4,6 +4,7 @@ import com.study.user.model.User;
 import com.study.user.model.UserRole;
 import com.study.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationManager implements AuthenticationManager {
@@ -26,6 +28,7 @@ public class CustomAuthenticationManager implements AuthenticationManager {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        log.debug("CustomAuthenticationManager email : {}", authentication.getName());
         User user  = userRepository.findByEmail(authentication.getName());
         if(user != null) {
             if(bCryptPasswordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
