@@ -22,9 +22,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-
-    private final JwtFilter jwtFilter;
-
     private final JwtTokenFilter jwtTokenFilter;
 
     @Bean
@@ -39,14 +36,15 @@ public class WebSecurityConfig {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .addFilterBefore(jwtTokenFilter, BasicAuthenticationFilter.class)
+                //.addFilterBefore(jwtTokenFilter, BasicAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
-                //.antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/users/**").hasRole("USER")
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated();
                 //.and()
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();

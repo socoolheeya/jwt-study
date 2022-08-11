@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +31,6 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping(path = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getUser(@PathVariable("userId") long userId) {
         User user = userService.userGetUserById(userId);
 

@@ -1,5 +1,6 @@
 package com.study.user.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,14 +24,16 @@ public class UserRole {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_role_id")
-    private Long id;
+    private Long userRoleId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
+    //@JsonBackReference
     private Role role;
 
 

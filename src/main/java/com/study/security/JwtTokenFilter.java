@@ -28,7 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final UserDetailsService userDetailsService;
+    //private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -41,6 +41,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             log.debug("####jwt : {}", jwt);
             if(StringUtils.hasText(jwt) && jwtTokenProvider.validationJwtToken(jwt)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
+
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 

@@ -12,8 +12,10 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -53,14 +55,10 @@ public class JwtTokenProvider {
         claims.put("userId", authentication.getName());
 
         Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String ymd = "2022-08-14";
-        ParsePosition pp = new ParsePosition(0);
-        Date d = sdf.parse(ymd, pp);
         String accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + 9999999 * 60))
+                .setExpiration(new Date(now.getTime() + JwtProperties.ACCESS_EXPIRATION_TIME))
                 .signWith(this.getSignKey(), SignatureAlgorithm.HS512)
                 .compact()
                 ;
@@ -68,7 +66,7 @@ public class JwtTokenProvider {
         String refreshToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis() + JwtProperties.REFRESH_EXPIRATION_TIME))
+                .setExpiration(new Date(now.getTime() + JwtProperties.REFRESH_EXPIRATION_TIME))
                 .signWith(this.getSignKey(), SignatureAlgorithm.HS512)
                 .compact()
                 ;
@@ -83,7 +81,10 @@ public class JwtTokenProvider {
 
     public boolean validationJwtToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(this.getSignKey()).build().parseClaimsJwt(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(this.getSignKey())
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (SignatureException e) {
             log.error("invalid JWT signature: {}", e.getMessage());
@@ -122,7 +123,7 @@ public class JwtTokenProvider {
         return Jwts.parserBuilder()
                 .setSigningKey(this.getSignKey())
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
     }
 

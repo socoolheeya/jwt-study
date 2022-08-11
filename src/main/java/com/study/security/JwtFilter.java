@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,10 @@ public class JwtFilter extends UsernamePasswordAuthenticationFilter {
             log.debug("JwtFilter password : {}", user.getPassword());
 
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
-            return customAuthenticationManager.authenticate(token);
+            Authentication authentication = customAuthenticationManager.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            return authentication;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
