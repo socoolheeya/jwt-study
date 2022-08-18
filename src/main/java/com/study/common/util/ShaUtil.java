@@ -2,7 +2,6 @@ package com.study.common.util;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

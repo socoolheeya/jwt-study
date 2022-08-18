@@ -2,7 +2,6 @@ package com.study.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.user.model.User;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
