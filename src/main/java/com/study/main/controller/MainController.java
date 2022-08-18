@@ -4,6 +4,8 @@ import com.study.common.model.JwtToken;
 import com.study.common.service.JwtTokenService;
 import com.study.main.model.LoginRequest;
 import com.study.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +21,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 public class MainController {
-
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private JwtTokenService jwtTokenService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenService jwtTokenService;
 
     @GetMapping("/")
     public ResponseEntity<?> main() {
@@ -57,8 +55,15 @@ public class MainController {
     }
 
     @DeleteMapping(path = "/auth/sign-out")
-    public ResponseEntity<?> signOut() {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<?> signOut(LoginRequest loginRequest) {
+        log.debug("### userId : {}", loginRequest.getUserId());
+        JwtToken token = jwtTokenService.delete(loginRequest.getUserId());
+        log.debug("##### token : {}", token);
+        if(token != null) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
 

@@ -10,9 +10,7 @@ import javax.persistence.EntityManager;
 @Configuration
 @RequiredArgsConstructor
 public class JpaConfig {
-
     private final EntityManager entityManager;
-
     @Bean
     public JpaRepositoryFactory jpaRepositoryFactory() {
         return new JpaRepositoryFactory(entityManager);

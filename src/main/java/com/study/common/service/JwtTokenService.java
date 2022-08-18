@@ -23,6 +23,10 @@ public class JwtTokenService {
         return token;
     }
 
+    public JwtToken delete(String userId) {
+        return jwtTokenRepository.deleteJwtTokenByUserId(userId);
+    }
+
 
 
 

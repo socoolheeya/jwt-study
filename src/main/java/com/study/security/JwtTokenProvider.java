@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
-
     private final UserDetailsService userDetailsService;
 
     private Key getSignKey() {

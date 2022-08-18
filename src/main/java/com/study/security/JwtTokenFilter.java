@@ -25,23 +25,19 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
-
     private final JwtTokenProvider jwtTokenProvider;
-
-    //private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            log.debug("######request URI : " + request.getRequestURI());
+            log.debug("###### JwtTokenFilter request URI : " + request.getRequestURI());
             String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-            log.debug("####JwtTokenFilter header : {}", header);
+            log.debug("#### JwtTokenFilter doFilterInternal header : {}", header);
             //jwtTokenProvider.extractJwtToken(header);
-            String jwt = jwtTokenProvider.parseJwtToken(header);
-            log.debug("####jwt : {}", jwt);
-            if(StringUtils.hasText(jwt) && jwtTokenProvider.validationJwtToken(jwt)) {
-                Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-
+            String jwtToken = jwtTokenProvider.parseJwtToken(header);
+            log.debug("#### JwtTokenFilter doFilterInternal jwtToken : {}", jwtToken);
+            if(StringUtils.hasText(jwtToken) && jwtTokenProvider.validationJwtToken(jwtToken)) {
+                Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 

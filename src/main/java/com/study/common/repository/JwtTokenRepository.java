@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface JwtTokenRepository extends JpaRepository<JwtToken, Long> {
 
     JwtToken findByUserId(String userId);
+
+    JwtToken deleteJwtTokenByUserId(String userId);
 }
