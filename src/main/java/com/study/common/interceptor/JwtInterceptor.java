@@ -38,7 +38,16 @@ public class JwtInterceptor implements HandlerInterceptor {
         log.info("#### preHandle handler : {}", handler);
 
         HandlerMethod method = (HandlerMethod) handler;
-        method.getMethod().getParameterTypes();
+        Object[] parameterTypes = method.getMethod().getParameterTypes();
+        for(Object obj : parameterTypes) {
+            log.info("##### obj : {}", obj);
+            if(obj instanceof LoginRequest) {
+                LoginRequest param = (LoginRequest) obj;
+                param.setUserId((String)claims.get("userId"));
+            }
+        }
+
+        request.setAttribute("userId", (String)claims.get("userId"));
 
         return true;
     }

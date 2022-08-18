@@ -9,5 +9,5 @@ public interface JwtTokenRepository extends JpaRepository<JwtToken, Long> {
 
     JwtToken findByUserId(String userId);
 
-    JwtToken deleteJwtTokenByUserId(String userId);
+    long deleteByUserId(String userId);
 }

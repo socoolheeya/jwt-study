@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -55,12 +59,13 @@ public class MainController {
     }
 
     @DeleteMapping(path = "/auth/sign-out")
-    public ResponseEntity<?> signOut(LoginRequest loginRequest) {
-        log.debug("### userId : {}", loginRequest.getUserId());
-        JwtToken token = jwtTokenService.delete(loginRequest.getUserId());
-        log.debug("##### token : {}", token);
-        if(token != null) {
-            return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<?> signOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String userId = (String)request.getAttribute("userId");
+        log.info("### userId : {}", userId);
+        long result = jwtTokenService.delete(userId);
+        log.debug("##### result : {}", result);
+        if(result == 0) {
+            response.sendRedirect("/");
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
