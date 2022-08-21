@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -30,14 +32,21 @@ public class UserController {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    @GetMapping(path = "/list", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUsers() {
+        List<User> users = userService.getUsers();
+
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
+
     @GetMapping(path = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUser(@PathVariable("userId") long userId) {
         User user = userService.userGetUserById(userId);
 
         if(user != null) {
-            log.debug("getUser email : {}", user.getEmail());
-            log.debug("getUser userId : {}", userId);
-            log.debug("getUser name : {}", user.getName());
+            log.info("getUser email : {}", user.getEmail());
+            log.info("getUser userId : {}", userId);
+            log.info("getUser name : {}", user.getName());
 
             return ResponseEntity.status(HttpStatus.OK).body(user);
         }

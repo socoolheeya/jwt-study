@@ -11,6 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -19,6 +21,10 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final CustomAuthenticationManager authenticationManager;
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);

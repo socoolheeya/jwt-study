@@ -1,11 +1,14 @@
 package com.study.user.repository;
 
+import com.study.user.model.User;
 import com.study.user.model.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserRoleRepository extends JpaRepository<UserRole, Long> {
 
-    //UserRole findByUser(String email);
+    List<UserRole> findByUser(User user);
 }

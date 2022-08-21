@@ -28,8 +28,9 @@ public class CustomAuthenticationManager implements AuthenticationManager {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        log.debug("CustomAuthenticationManager email : {}", authentication.getName());
+        log.info("CustomAuthenticationManager email : {}", authentication.getName());
         User user  = userRepository.findByEmail(authentication.getName());
+        log.info("user : {}", user);
         if(user != null) {
             if(bCryptPasswordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
                 List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();

@@ -24,12 +24,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            log.debug("###### JwtTokenFilter request URI : " + request.getRequestURI());
+            log.info("###### JwtTokenFilter request URI : " + request.getRequestURI());
             String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-            log.debug("#### JwtTokenFilter doFilterInternal header : {}", header);
+            log.info("#### JwtTokenFilter doFilterInternal header : {}", header);
             //jwtTokenProvider.extractJwtToken(header);
             String jwtToken = jwtTokenProvider.parseJwtToken(header);
-            log.debug("#### JwtTokenFilter doFilterInternal jwtToken : {}", jwtToken);
+            log.info("#### JwtTokenFilter doFilterInternal jwtToken : {}", jwtToken);
             if(StringUtils.hasText(jwtToken) && jwtTokenProvider.validationJwtToken(jwtToken)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

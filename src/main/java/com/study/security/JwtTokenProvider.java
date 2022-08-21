@@ -1,6 +1,9 @@
 package com.study.security;
 
 import com.study.common.model.JwtToken;
+import com.study.user.model.User;
+import com.study.user.repository.UserRepository;
+import com.study.user.service.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -18,17 +21,22 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(JwtProperties.SECRET_KEY);
@@ -38,6 +46,13 @@ public class JwtTokenProvider {
 
 
     public JwtToken createToken(Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email);
+        if(ObjectUtils.isEmpty(user)) {
+            return null;
+        }
+
+        String userId = String.valueOf(user.getUserId());
 
         String roles = authentication.getAuthorities()
                 .stream()
@@ -45,9 +60,9 @@ public class JwtTokenProvider {
                 .collect(Collectors.joining(","));
 
         Claims claims = Jwts.claims()
-                .setSubject(authentication.getName());
+                .setSubject(userId);
         claims.put("roles", roles);
-        claims.put("userId", authentication.getName());
+        claims.put("email", email);
 
         Date now = new Date();
         String accessToken = Jwts.builder()
@@ -102,7 +117,7 @@ public class JwtTokenProvider {
     }
 
     public String parseJwtToken(String token) {
-        log.debug("parseJwtToken token : {}", token);
+        log.info("parseJwtToken token : {}", token);
         if(StringUtils.hasText(token) && token.startsWith("Bearer ")) {
             return this.extractJwtToken(token);
         }
@@ -110,7 +125,7 @@ public class JwtTokenProvider {
     }
 
     public String extractJwtToken(String token) {
-        log.debug("extractJwtToken token : {}", token);
+        log.info("extractJwtToken token : {}", token);
         return token.substring(7, token.length());
     }
 
@@ -123,7 +138,15 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getClaims(token).getSubject());
+        String str = (String) this.getClaims(token).get("roles");
+        List<String> tokens = new ArrayList<>();
+        StringTokenizer tokenizer = new StringTokenizer(str, ",");
+        while (tokenizer.hasMoreElements()) {
+            tokens.add(tokenizer.nextToken());
+        }
+
+        userDetailsService.setRoles(tokens);
+        UserDetails userDetails = userDetailsService.loadUserByUsername((String)this.getClaims(token).get("email"));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }

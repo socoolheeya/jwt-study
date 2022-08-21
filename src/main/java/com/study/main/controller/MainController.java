@@ -62,7 +62,7 @@ public class MainController {
         String userId = (String)request.getAttribute("userId");
         log.info("### userId : {}", userId);
         long result = jwtTokenService.delete(userId);
-        log.debug("##### result : {}", result);
+        log.info("##### result : {}", result);
         if(result == 0) {
             response.sendRedirect("/");
         }
